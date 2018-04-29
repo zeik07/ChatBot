@@ -15,9 +15,7 @@ namespace ChatBot.Controllers
     public class HomeController : Controller
     {
         public static string ResponseData { get; set; }
-        public static string Name { get; set; }
-        public static Dictionary<string, string> Tokens = new Dictionary<string, string>();
-
+        
         public async Task<IActionResult> Index()
         {
             ViewBag.Login = "https://id.twitch.tv/oauth2/authorize?client_id=i5p26xmsi1xqaf47rk031z60qns1tj&redirect_uri=http://localhost:51083&response_type=code&scope=chat_login%20user_read";
@@ -44,72 +42,18 @@ namespace ChatBot.Controllers
 
         public async Task<IActionResult> Dashboard()
         {
+            AuthController Auth = new AuthController();
             string json = ResponseData;
-            AllChildren(JObject.Parse(json)).Children().ToList();
-            string access = Tokens["access_token"];
+            Auth.AllChildren(JObject.Parse(json)).Children().ToList();
+            string access = AuthViewModel.Tokens["access_token"];
 
-            await UsernameJson(access);
+            await Auth.UsernameJson(access);
             
-            ViewBag.Username = Name;
+            ViewBag.Username = AuthViewModel.Name;
             
             return View();
         }
-
-        private async Task<IActionResult> UsernameJson(string access)
-        {
-            string responseBody = null;
-            string userUrl = String.Format("https://api.twitch.tv/kraken?oauth_token={0}", access);
-            HttpClient client = new HttpClient();
-            HttpResponseMessage response = await client.GetAsync(userUrl);
-            response.EnsureSuccessStatusCode();
-            responseBody = await response.Content.ReadAsStringAsync();
-            if (responseBody != null)
-            {
-                Username(JObject.Parse(responseBody)).Children().ToList();
-            }
-
-            return this.Content("test");
-        }
-
-        private IEnumerable<JToken> Username(JToken json)
-        {            
-            foreach (var c in json.Children())
-            {
-                string path = c.Path.ToString();
-                yield return c;
-                foreach (var cc in Username(c))
-                {                        
-                    string child = cc.ToString();
-                    if (path == "token.user_name")
-                    {
-                        Name = child;
-                    }
-                    yield return cc;
-                }       
-            }
-
-        }
-
-        private IEnumerable<JToken> AllChildren(JToken json)
-        {
-            Dictionary<string, string> tokens = new Dictionary<string, string>();
-            foreach (var c in json.Children())
-            {
-                if (c.ToString().Contains("scope") is false)
-                {
-                    yield return c;
-                    foreach (var cc in AllChildren(c))
-                    {
-                        string path = c.Path.ToString();
-                        string child = cc.ToString();                        
-                        tokens.Add(path, child);
-                        Tokens = tokens;
-                        yield return cc;
-                    }
-                }
-            }            
-        }
-
+        
         public IActionResult About()
         {
             return View();
