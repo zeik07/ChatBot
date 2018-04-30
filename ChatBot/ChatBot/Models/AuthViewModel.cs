@@ -9,5 +9,8 @@ namespace ChatBot.Models
     {
         public static string Name { get; set; }
         public static Dictionary<string, string> Tokens { get; set; }
+        public static string ResponseBody { get; set; }
+        public static string CodeCheck { get; set; }
+        public static string ResponseData { get; set; }
     }
 }

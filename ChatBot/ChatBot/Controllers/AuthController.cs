@@ -9,8 +9,21 @@ using System.Threading.Tasks;
 
 namespace ChatBot.Controllers
 {
-    public class AuthController
+    public class AuthController : Controller
     {
+        public async Task<IActionResult> GetToken()
+        {
+            string tokensUrl = String.Format(
+                "https://id.twitch.tv/oauth2/token?client_id=i5p26xmsi1xqaf47rk031z60qns1tj&client_secret=7l89xz347lkgslrbtldz0pw1bau9vw&grant_type=authorization_code&redirect_uri=http://localhost:51083&code={0}",
+                AuthViewModel.CodeCheck);
+            HttpClient client = new HttpClient();
+            HttpContent content = null;
+            HttpResponseMessage response = await client.PostAsync(tokensUrl, content);
+            response.EnsureSuccessStatusCode();
+            AuthViewModel.ResponseBody = await response.Content.ReadAsStringAsync();
+            return null;
+        }
+
         public async Task<IActionResult> UsernameJson(string access)
         {
             string responseBody = null;
