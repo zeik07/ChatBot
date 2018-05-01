@@ -2,8 +2,11 @@
     ViewData["Title"] = "Home Page";
 }
 <h1>@(ViewBag.Username+"'s") Dashboard</h1>
-<div style="border: 1px black solid; height: 600px; width: 800px; text-wrap:normal; overflow: auto"></div>
-<form>
-    <input type="text" style="width:747px">
-    <input type="submit" value="Send" style="width:50px">
-</form>
+
+<iframe frameborder="0"
+        scrolling="yes"
+        id="chat_embed"
+        src="http://www.twitch.tv/embed/@(ViewBag.Username)/chat"
+        height="600"
+        width="800">
+</iframe>

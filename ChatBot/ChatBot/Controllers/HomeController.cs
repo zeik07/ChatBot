@@ -48,7 +48,7 @@ namespace ChatBot.Controllers
             await Auth.UsernameJson(AuthViewModel.Tokens["access_token"]);
             
             ViewBag.Username = AuthViewModel.Name;
-            
+
             return View();
         }
         
