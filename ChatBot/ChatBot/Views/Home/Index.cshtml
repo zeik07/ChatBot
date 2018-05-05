@@ -1,5 +1,8 @@
-﻿@{
+﻿@model ChatBot.Models.AuthViewModel
+@{
     ViewData["Title"] = "Login";
 }
 <br />
-<center><input type="button" value="Login to Twitch" onclick="window.location.href=' @ViewBag.Login ' " /></center>
+<center>
+    <input type="button" value="Login to Twitch" onclick="location.href='@AuthViewModel.LoginUrl'" />
+</center>

@@ -16,24 +16,20 @@ namespace ChatBot.Controllers
     {       
         public async Task<IActionResult> Index()
         {
-            if (AuthViewModel.Tokens != null)
+            if (AuthViewModel.InitialTokens != null)
             {
                 return Redirect("/Home/Dashboard");
             }
-            ViewBag.Login = "https://id.twitch.tv/oauth2/authorize?client_id=i5p26xmsi1xqaf47rk031z60qns1tj&redirect_uri=http://localhost:51083&response_type=code&scope=chat_login%20user_read";
-            AuthViewModel.CodeCheck = HttpContext.Request.Query["code"];
-            if (AuthViewModel.CodeCheck != null)
+            AuthViewModel.AuthorizationCode = HttpContext.Request.Query["code"];
+            if (AuthViewModel.AuthorizationCode != null)
             {
                 AuthController Auth = new AuthController();
-                await Auth.GetToken();
+                await Auth.GetTokens();
             }
-
             if (AuthViewModel.ResponseBody != null)
             {
-                AuthViewModel.ResponseData = AuthViewModel.ResponseBody;
                 return Redirect("/Home/Dashboard");
             }
-
             return View();
         }
         
@@ -44,11 +40,11 @@ namespace ChatBot.Controllers
                 return Redirect("/Home");
             }
             AuthController Auth = new AuthController();
-            Auth.AllChildren(JObject.Parse(AuthViewModel.ResponseData)).Children().ToList();
-            await Auth.UsernameJson(AuthViewModel.Tokens["access_token"]);
-            
-            ViewBag.Username = AuthViewModel.Name;
-
+            Auth.SortInitialTokens(JObject.Parse(AuthViewModel.ResponseBody)).Children().ToList();
+            await Auth.GetUsernameJson(AuthViewModel.InitialTokens["access_token"]);
+            await Auth.GetUserIdJson(AuthViewModel.UserName);
+            StreamInfoController Info = new StreamInfoController();
+            await Info.GetStreamInfoJson(AuthViewModel.UserId);
             return View();
         }
         

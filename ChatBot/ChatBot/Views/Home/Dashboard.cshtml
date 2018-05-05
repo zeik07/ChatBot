@@ -1,12 +1,26 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-<h1>@(ViewBag.Username+"'s") Dashboard</h1>
-
-<iframe frameborder="0"
-        scrolling="yes"
-        id="chat_embed"
-        src="http://www.twitch.tv/embed/@(ViewBag.Username)/chat"
-        height="600"
-        width="800">
-</iframe>
+<h1>@(AuthViewModel.UserName+"'s") Dashboard</h1>
+<table style="border-collapse: separate;
+    border-spacing: 40px">
+    <tr>
+        <td>
+            <iframe frameborder="0"
+                    scrolling="yes"
+                    id="chat_embed"
+                    src="http://www.twitch.tv/embed/@(AuthViewModel.UserName)/chat"
+                    height="600"
+                    width="800">
+            </iframe>
+        </td>
+        <td style="vertical-align:top">
+            <p>Game: @(StreamInfoModel.Game)</p>
+            <p>Title: @(StreamInfoModel.Title)</p>
+            <p>
+                Communities:
+                @foreach (string community in StreamInfoModel.Communities){ <text> @community &nbsp; </text> }
+            </p>
+        </td>
+    </tr>  
+</table>
