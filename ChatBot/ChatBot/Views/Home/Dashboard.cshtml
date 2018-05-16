@@ -1,26 +1,22 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-<h1>@(AuthViewModel.UserName+"'s") Dashboard</h1>
-<table style="border-collapse: separate;
-    border-spacing: 40px">
-    <tr>
-        <td>
-            <iframe frameborder="0"
-                    scrolling="yes"
-                    id="chat_embed"
-                    src="http://www.twitch.tv/embed/@(AuthViewModel.UserName)/chat"
-                    height="600"
-                    width="800">
-            </iframe>
-        </td>
-        <td style="vertical-align:top">
-            <p>Game: @(StreamInfoModel.Game)</p>
-            <p>Title: @(StreamInfoModel.Title)</p>
-            <p>
-                Communities:
-                @foreach (string community in StreamInfoModel.Communities){ <text> @community &nbsp; </text> }
-            </p>
-        </td>
-    </tr>  
-</table>
+
+<h1>@(AuthViewModel.UserName + "'s") Dashboard</h1>
+<div class="flex-container">
+    <div>
+        <iframe frameborder="0" scrolling="yes" id="chat_embed" src="http://www.twitch.tv/embed/@(AuthViewModel.UserName)/chat" height="600" width="500"></iframe>
+    </div>
+    <div class="grid-container">
+        <div>Game:</div>
+        <div><input type="text" value="@(StreamInfoModel.Game)" /></div>
+        <div>Title:</div>
+        <div><input type="text" value="@(StreamInfoModel.Title)" /></div>
+        <div >Communities:</div>
+        @foreach (string community in StreamInfoModel.Communities)
+        {
+        <div><input type="text" value="@community" /></div>
+        }
+        <div class="grid-item"><input type="button" value="Set" /></div>
+    </div>
+</div>

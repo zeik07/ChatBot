@@ -1,6 +1,8 @@
 ﻿body {
     padding-top: 50px;
     padding-bottom: 20px;
+    background-color: dimgray;
+    color: white;
 }
 
 /* Wrapping element */
@@ -10,26 +12,48 @@
     padding-right: 15px;
 }
 
-/* Carousel */
-.carousel-caption p {
-    font-size: 20px;
-    line-height: 1.4;
-}
-
-/* Make .svg files in the carousel display properly in older browsers */
-.carousel-inner .item img[src$=".svg"] {
-    width: 100%;
-}
-
-/* QR code generator */
-#qrCode {
-    margin: 15px;
-}
-
 /* Hide/rearrange for smaller screens */
 @media screen and (max-width: 767px) {
     /* Hide captions */
     .carousel-caption {
         display: none;
     }
+}
+
+.flex-container{
+    display: flex;
+    justify-content: space-between;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    grid-template-rows: auto auto auto 1fr;
+    grid-gap: 10px;
+    padding: 10px;
+    background-color: #161616;
+    height: 150px;
+}
+
+.grid-container > div{
+    padding: 5px;
+}
+
+input{
+    color: black;
+}
+
+.grid-item{
+    grid-column: 4;
+}
+
+.grid-item > input{
+    width: 150px;
+}
+
+.index-flex{
+    display: flex;
+    height: 600px;
+    align-items: center;
+    justify-content: center;
 }
