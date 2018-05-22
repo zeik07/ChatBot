@@ -7,16 +7,22 @@
     <div>
         <iframe frameborder="0" scrolling="yes" id="chat_embed" src="http://www.twitch.tv/embed/@(AuthViewModel.UserName)/chat" height="600" width="500"></iframe>
     </div>
-    <div class="grid-container">
-        <div>Game:</div>
-        <div><input type="text" value="@(StreamInfoModel.Game)" /></div>
-        <div>Title:</div>
-        <div><input type="text" value="@(StreamInfoModel.Title)" /></div>
-        <div >Communities:</div>
-        @foreach (string community in StreamInfoModel.Communities)
-        {
-        <div><input type="text" value="@community" /></div>
-        }
-        <div class="grid-item"><input type="button" value="Set" /></div>
-    </div>
+    <form method="post" class="grid-container">
+        <div class="info">
+            <label>Game</label>
+            <input value="@(StreamInfoModel.Game)" />
+        </div>
+        <div class="info">
+            <label>Title</label>
+            <input value="@(StreamInfoModel.Title)" />
+        </div>
+        <div class="communities">
+            <label>Communities</label>
+            @foreach (string community in StreamInfoModel.Communities)
+            {
+                <input value="@community" />
+            }
+        </div>
+        <input class="button" type="submit" value="Update Stream" asp-action="update" />
+    </form>
 </div>
