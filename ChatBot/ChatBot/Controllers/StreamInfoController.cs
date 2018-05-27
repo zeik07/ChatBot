@@ -42,7 +42,7 @@ namespace ChatBot.Controllers
             {
                 GetCommunityInfo(JObject.Parse(responseBody)).Children().ToList();
             }
-            StreamInfoModel.Communities = communities;
+            StreamInfo.Communities = communities;
             return null;
         }
 
@@ -57,11 +57,11 @@ namespace ChatBot.Controllers
                     string child = cc.ToString();
                     if (path == "status")
                     {
-                        StreamInfoModel.Title = child;
+                        StreamInfo.Title = child;
                     }
                     if (path == "game")
                     {
-                        StreamInfoModel.Game = child;
+                        StreamInfo.Game = child;
                     }
                     yield return cc;
                 }

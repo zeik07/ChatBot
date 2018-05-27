@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ChatBot.Models
 {
-    public class StreamInfoModel
+    public class StreamInfo
     {
         public static string Title { get; set; }
         public static string Game { get; set; }

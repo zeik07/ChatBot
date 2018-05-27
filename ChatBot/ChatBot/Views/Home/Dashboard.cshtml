@@ -1,28 +1,29 @@
-﻿@{
+﻿@model ChatBot.ViewModels.StreamInfoViewModel
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<h1>@(AuthViewModel.UserName + "'s") Dashboard</h1>
+<h1>@(Authenticate.UserName + "'s") Dashboard</h1>
 <div class="flex-container">
     <div>
-        <iframe frameborder="0" scrolling="yes" id="chat_embed" src="http://www.twitch.tv/embed/@(AuthViewModel.UserName)/chat" height="600" width="500"></iframe>
+        <iframe frameborder="0" scrolling="yes" id="chat_embed" src="http://www.twitch.tv/embed/@(Authenticate.UserName)/chat" height="600" width="500"></iframe>
     </div>
-    <form method="post" class="grid-container">
+    <form method="post" asp-controller="Home" asp-action="update" class="grid-container">
         <div class="info">
-            <label>Game</label>
-            <input value="@(StreamInfoModel.Game)" />
+            <label asp-for="Game">Game</label>
+            <input asp-for="Game" value="@(StreamInfo.Game)" />
         </div>
         <div class="info">
-            <label>Title</label>
-            <input value="@(StreamInfoModel.Title)" />
+            <label asp-for="Title">Title</label>
+            <input asp-for="Title" value="@(StreamInfo.Title)" />
         </div>
         <div class="communities">
             <label>Communities</label>
-            @foreach (string community in StreamInfoModel.Communities)
+            @foreach (string community in StreamInfo.Communities)
             {
                 <input value="@community" />
             }
         </div>
-        <input class="button" type="submit" value="Update Stream" asp-action="update" />
+        <input class="button" type="submit" value="Update Stream" />
     </form>
 </div>

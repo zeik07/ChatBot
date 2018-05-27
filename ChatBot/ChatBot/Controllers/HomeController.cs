@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using System.Net;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
+using ChatBot.ViewModels;
 
 namespace ChatBot.Controllers
 {
@@ -16,17 +17,17 @@ namespace ChatBot.Controllers
     {       
         public async Task<IActionResult> Index()
         {
-            if (AuthViewModel.InitialTokens != null)
+            if (Models.Authenticate.InitialTokens != null)
             {
                 return Redirect("/Home/Dashboard");
             }
-            AuthViewModel.AuthorizationCode = HttpContext.Request.Query["code"];
-            if (AuthViewModel.AuthorizationCode != null)
+            Models.Authenticate.AuthorizationCode = HttpContext.Request.Query["code"];
+            if (Models.Authenticate.AuthorizationCode != null)
             {
                 AuthController Auth = new AuthController();
                 await Auth.GetTokens();
             }
-            if (AuthViewModel.ResponseBody != null)
+            if (Models.Authenticate.ResponseBody != null)
             {
                 return Redirect("/Home/Dashboard");
             }
@@ -35,19 +36,39 @@ namespace ChatBot.Controllers
         
         public async Task<IActionResult> Dashboard()
         {
-            if (AuthViewModel.ResponseBody == null)
+            if (Models.Authenticate.ResponseBody == null)
             {
                 return Redirect("/Home");
             }
             AuthController Auth = new AuthController();
-            Auth.SortInitialTokens(JObject.Parse(AuthViewModel.ResponseBody)).Children().ToList();
-            await Auth.GetUsernameJson(AuthViewModel.InitialTokens["access_token"]);
-            await Auth.GetUserIdJson(AuthViewModel.UserName);
+            Auth.SortInitialTokens(JObject.Parse(Models.Authenticate.ResponseBody)).Children().ToList();
+            await Auth.GetUsernameJson(Models.Authenticate.InitialTokens["access_token"]);
+            await Auth.GetUserIdJson(Models.Authenticate.UserName);
             StreamInfoController Info = new StreamInfoController();
-            await Info.GetStreamInfoJson(AuthViewModel.UserId);
+            await Info.GetStreamInfoJson(Models.Authenticate.UserId);
             return View();
         }
-        
+
+        public IActionResult Authenticate()
+        {
+            string url = Models.Authenticate.LoginUrl;
+            return Redirect(url);
+        }
+
+        public async Task<IActionResult> Update(StreamInfoViewModel streamInfoViewModel)
+        {
+            string game = streamInfoViewModel.Game;
+            string title = streamInfoViewModel.Title;
+
+            AuthController Auth = new AuthController();
+            await Auth.Validate();
+
+            UpdateController UpdateInfo = new UpdateController();
+            await UpdateInfo.Update(game, title);
+
+            return Redirect("/Home/Dashboard");
+        }
+
         public IActionResult About()
         {
             return View();
@@ -55,7 +76,12 @@ namespace ChatBot.Controllers
                 
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(new Error { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public IActionResult Commands()
+        {
+            return View();
         }
     }
 }

@@ -2,7 +2,7 @@ using System;
 
 namespace ChatBot.Models
 {
-    public class ErrorViewModel
+    public class Error
     {
         public string RequestId { get; set; }
 

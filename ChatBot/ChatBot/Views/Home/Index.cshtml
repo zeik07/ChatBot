@@ -1,9 +1,10 @@
-﻿@model ChatBot.Models.AuthViewModel
-@{
+﻿@{
     ViewData["Title"] = "Login";
 }
 
 <div class="index-flex">
-    <input type="button" value="Login to Twitch" onclick="location.href='@AuthViewModel.LoginUrl'" />
+    <form method="get" asp-controller="Home">
+        <input class="button" type="submit" value="Login to Twitch" asp-action="authenticate" />
+    </form>
 </div>
 
