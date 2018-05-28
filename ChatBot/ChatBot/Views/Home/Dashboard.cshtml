@@ -20,8 +20,8 @@
         <div class="communities">
             <label>Communities</label>
             @foreach (string community in StreamInfo.Communities)
-            {
-                <input value="@community" />
+            {   
+                <input value="@community" id="@StreamInfo.Communities.IndexOf(community)" asp-for="Communities[StreamInfo.Communities.IndexOf(community)]"/>
             }
         </div>
         <input class="button" type="submit" value="Update Stream" />

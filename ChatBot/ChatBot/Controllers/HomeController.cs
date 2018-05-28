@@ -59,12 +59,15 @@ namespace ChatBot.Controllers
         {
             string game = streamInfoViewModel.Game;
             string title = streamInfoViewModel.Title;
+            List<string> communities = streamInfoViewModel.Communities;
 
             AuthController Auth = new AuthController();
             await Auth.Validate();
 
             UpdateController UpdateInfo = new UpdateController();
             await UpdateInfo.Update(game, title);
+
+            await UpdateInfo.UpdateCommunities(communities);
 
             return Redirect("/Home/Dashboard");
         }
