@@ -28,7 +28,7 @@ namespace ChatBot.Controllers
                 await Auth.GetTokens();
             }
             if (Models.Authenticate.ResponseBody != null)
-            {
+            {                
                 return Redirect("/Home/Dashboard");
             }
             return View();
@@ -46,6 +46,8 @@ namespace ChatBot.Controllers
             await Auth.GetUserIdJson(Models.Authenticate.UserName);
             StreamInfoController Info = new StreamInfoController();
             await Info.GetStreamInfoJson(Models.Authenticate.UserId);
+            IrcController Irc = new IrcController();
+            Irc.StartIrc();
             return View();
         }
 

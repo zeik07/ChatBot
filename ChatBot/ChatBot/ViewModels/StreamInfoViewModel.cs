@@ -15,6 +15,5 @@ namespace ChatBot.ViewModels
         public string Title { get; set; }
 
         public List<string> Communities { get; set; }
-
     }
 }
