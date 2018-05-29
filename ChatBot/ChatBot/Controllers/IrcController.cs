@@ -71,13 +71,21 @@ namespace ChatBot.Controllers
         private void Commands(string userName, string message)
         {
             string command = message.Split(new[] { ' ', '!' }, StringSplitOptions.None)[1];
-
-            switch (command.ToLower())
+            foreach (KeyValuePair<string, string> commands in CommandList.CommandsList)
+            {
+                if (command.ToLower() == commands.Key.ToString().ToLower())
+                {
+                    Irc.SendChatMessage(commands.Value.ToString());
+                    break;
+                }
+            }
+            /*switch (command.ToLower())
             {
                 case "test":
                     Irc.SendChatMessage("Testing!");
                     break;
-            }
+            }*/
+
         }
     }
 
