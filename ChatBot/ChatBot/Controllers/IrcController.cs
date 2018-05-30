@@ -21,12 +21,12 @@ namespace ChatBot.Controllers
         Thread ChatThread;
 
         public void StartIrc()
-        {
-            Irc.JoinRoom(UserName);
+        {            
+            Irc.JoinRoom(UserName);            
             ChatThread = new Thread(GetMessage);
             ChatThread.Start();
         }
-
+        
         private void GetMessage()
         {
             ServerStream = Irc.tcpClient.GetStream();

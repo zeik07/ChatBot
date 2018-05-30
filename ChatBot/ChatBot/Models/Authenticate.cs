@@ -13,5 +13,6 @@ namespace ChatBot.Models
         public static Dictionary<string, string> InitialTokens { get; set; }
         public static string ResponseBody { get; set; }
         public static string AuthorizationCode { get; set; }
+        public static bool IrcState { get; set; }
     }
 }

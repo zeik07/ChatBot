@@ -14,7 +14,7 @@ using ChatBot.ViewModels;
 namespace ChatBot.Controllers
 {
     public class HomeController : Controller
-    {       
+    {
         public async Task<IActionResult> Index()
         {
             if (Models.Authenticate.InitialTokens != null)
@@ -22,6 +22,7 @@ namespace ChatBot.Controllers
                 return Redirect("/Home/Dashboard");
             }
             Models.Authenticate.AuthorizationCode = HttpContext.Request.Query["code"];
+            Models.Authenticate.IrcState = false;
             if (Models.Authenticate.AuthorizationCode != null)
             {
                 AuthController Auth = new AuthController();
@@ -45,9 +46,14 @@ namespace ChatBot.Controllers
             await Auth.GetUsernameJson(Models.Authenticate.InitialTokens["access_token"]);
             await Auth.GetUserIdJson(Models.Authenticate.UserName);
             StreamInfoController Info = new StreamInfoController();
-            await Info.GetStreamInfoJson(Models.Authenticate.UserId);
-            IrcController Irc = new IrcController();
-            Irc.StartIrc();
+            await Info.GetStreamInfoJson(Models.Authenticate.UserId); 
+            if (Models.Authenticate.IrcState == false)
+            {
+                IrcController Irc = new IrcController();
+                Irc.StartIrc();
+                Models.Authenticate.IrcState = true;
+            }
+            
             return View();
         }
 
