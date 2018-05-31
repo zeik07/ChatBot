@@ -7,19 +7,19 @@ namespace ChatBot.Models
 {
     public class Headers
     {
-        public static  Dictionary<string, string> ClientId = new Dictionary<string, string>
+        public static List<KeyValuePair<string, string>> ClientId = new List<KeyValuePair<string, string>>()
         {
-            { "Client-ID", "i5p26xmsi1xqaf47rk031z60qns1tj" }
+            new KeyValuePair<string, string>("Client-ID", "i5p26xmsi1xqaf47rk031z60qns1tj")
         };
 
-        public static Dictionary<string, string> Accept = new Dictionary<string, string>
+        public static List<KeyValuePair<string, string>> Accept = new List<KeyValuePair<string, string>>
         {
-            { "Accept", "application/vnd.twitchtv.v5+json"}
+            new KeyValuePair<string, string>("Accept", "application/vnd.twitchtv.v5+json")
         };
 
-        public static Dictionary<string, string> Authorization = new Dictionary<string, string>
+        public static List<KeyValuePair<string, string>> Authorization = new List<KeyValuePair<string, string>>
         {
-            {"Authorization", " OAuth " + Authenticate.InitialTokens["access_token"] }
+            new KeyValuePair<string, string>("Authorization", " OAuth " + Authenticate.InitialTokens["access_token"])
         };
 
         public static List<string> ContentType = new List<string>

@@ -12,80 +12,55 @@ namespace ChatBot.Controllers
 {
     public class AuthController : Controller
     {
-        public HttpClient client = new HttpClient();
+        public ClientController client = new ClientController();
 
-        public async Task<IActionResult> GetTokens()
+        public async Task GetTokens()
         {
             string tokensUrl = String.Format(
                 "https://id.twitch.tv/oauth2/token?client_id=i5p26xmsi1xqaf47rk031z60qns1tj&client_secret=7l89xz347lkgslrbtldz0pw1bau9vw&grant_type=authorization_code&redirect_uri=http://localhost:51083&code={0}",
                 Authenticate.AuthorizationCode);
-            HttpContent content = null;
-            HttpResponseMessage response = await client.PostAsync(tokensUrl, content);
-            response.EnsureSuccessStatusCode();
+
+            HttpResponseMessage response = await client.PostRequest(tokensUrl);
+            
             Authenticate.ResponseBody = await response.Content.ReadAsStringAsync();
-            return null;
         }
 
-        public async Task<IActionResult> GetUsernameJson(string access)
+        public async Task GetUser(string access)
         {
-            string responseBody = null;
-            string userUrl = String.Format("https://api.twitch.tv/kraken?oauth_token={0}", access);
-            HttpResponseMessage response = await client.GetAsync(userUrl);
-            response.EnsureSuccessStatusCode();
-            responseBody = await response.Content.ReadAsStringAsync();
+            string userUrl = "https://api.twitch.tv/kraken/user";
+
+            HttpResponseMessage response = await client.GetRequest(Headers.Authorization, Headers.ClientId, Headers.Accept, userUrl);
+
+            string responseBody = await response.Content.ReadAsStringAsync();
             if (responseBody != null)
             {
-                GetUsername(JObject.Parse(responseBody)).Children().ToList();
+                GetUserInfo(JObject.Parse(responseBody)).Children().ToList();
             }
-            return null;
         }
 
-        public async Task<IActionResult> GetUserIdJson(string name)
+        public async Task Validate()
         {
-            string responseBody = null;
-            string userUrl = String.Format("https://api.twitch.tv/helix/users?login={0}", name);
-            client.DefaultRequestHeaders.Clear();
-            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + Authenticate.InitialTokens["access_token"]);
-            HttpResponseMessage response = await client.GetAsync(userUrl);
-            response.EnsureSuccessStatusCode();
-            responseBody = await response.Content.ReadAsStringAsync();
-            if (responseBody != null)
-            {
-                GetUserId(JObject.Parse(responseBody)).Children().ToList();
-            }
-            return null;
+            string validateUrl = "https://id.twitch.tv/oauth2/validate";
+
+            HttpResponseMessage response = await client.GetRequest(Headers.Authorization, null, null, validateUrl);
         }
 
-        private IEnumerable<JToken> GetUserId(JToken json)
+        private IEnumerable<JToken> GetUserInfo(JToken json)
         {
             foreach (var c in json.Children())
             {
                 string path = c.Path.ToString();
                 yield return c;
-                foreach (var cc in GetUserId(c))
+                foreach (var cc in GetUserInfo(c))
                 {
                     string child = cc.ToString();
-                    if (path == "data[0].id")
-                    {
-                        Authenticate.UserId = cc.ToString();
-                    }
-                    yield return cc;
-                }
-            }
-        }
-
-        private IEnumerable<JToken> GetUsername(JToken json)
-        {
-            foreach (var c in json.Children())
-            {
-                string path = c.Path.ToString();
-                yield return c;
-                foreach (var cc in GetUsername(c))
-                {
-                    string child = cc.ToString();
-                    if (path == "token.user_name")
+                    if (path == "display_name")
                     {
                         Authenticate.UserName = child;
+                    }
+                    if (path == "_id")
+                    {
+                        Authenticate.UserId = child;
                     }
                     yield return cc;
                 }
@@ -110,14 +85,6 @@ namespace ChatBot.Controllers
                     }
                 }
             }
-        }
-
-        public async Task<IActionResult> Validate()
-        {
-            client.DefaultRequestHeaders.Add("Authorization", " OAuth " + Authenticate.InitialTokens["access_token"]);
-            HttpResponseMessage response = await client.GetAsync("https://id.twitch.tv/oauth2/validate");
-            response.EnsureSuccessStatusCode();
-            return null;
         }
     }
 }

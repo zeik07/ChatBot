@@ -43,8 +43,7 @@ namespace ChatBot.Controllers
             }
             AuthController Auth = new AuthController();
             Auth.SortInitialTokens(JObject.Parse(Models.Authenticate.ResponseBody)).Children().ToList();
-            await Auth.GetUsernameJson(Models.Authenticate.InitialTokens["access_token"]);
-            await Auth.GetUserIdJson(Models.Authenticate.UserName);
+            await Auth.GetUser(Models.Authenticate.InitialTokens["access_token"]);
             StreamInfoController Info = new StreamInfoController();
             await Info.GetStreamInfoJson(Models.Authenticate.UserId); 
             if (Models.Authenticate.IrcState == false)
