@@ -45,7 +45,7 @@ namespace ChatBot.Controllers
             string responseBody = null;
             string userUrl = String.Format("https://api.twitch.tv/helix/users?login={0}", name);
             client.DefaultRequestHeaders.Clear();
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Authenticate.InitialTokens["access_token"]);
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + Authenticate.InitialTokens["access_token"]);
             HttpResponseMessage response = await client.GetAsync(userUrl);
             response.EnsureSuccessStatusCode();
             responseBody = await response.Content.ReadAsStringAsync();
