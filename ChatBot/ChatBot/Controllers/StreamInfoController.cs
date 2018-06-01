@@ -12,38 +12,38 @@ namespace ChatBot.Controllers
 {
     public class StreamInfoController : Controller
     {
+        public ClientController client = new ClientController();
+
         public IActionResult Index()
         {
             return View();
         }
 
-        public async Task<IActionResult> GetStreamInfoJson(string userId)
+        public async Task GetStreamInfoJson(string userId)
         {
-            string responseBody = null;
-            string streamUrl = null;
-            HttpResponseMessage response = null;
-            HttpClient client = new HttpClient();
-            client.DefaultRequestHeaders.Clear();
-            client.DefaultRequestHeaders.Add("Accept", "application/vnd.twitchtv.v5+json");
-            client.DefaultRequestHeaders.Add("Client-Id", "i5p26xmsi1xqaf47rk031z60qns1tj");
-            streamUrl = String.Format("https://api.twitch.tv/kraken/channels/{0}", userId);
-            response = await client.GetAsync(streamUrl);
-            response.EnsureSuccessStatusCode();
-            responseBody = await response.Content.ReadAsStringAsync();
-            if (responseBody != null)
+            string streamUrl = String.Format("https://api.twitch.tv/kraken/channels/{0}", userId);
+
+            HttpResponseMessage response = await client.GetRequest(null, Headers.ClientId, Headers.Accept, streamUrl);
+
+            string ResponseBody = await response.Content.ReadAsStringAsync();
+            if (ResponseBody != null)
             {
-                GetStreamInfo(JObject.Parse(responseBody)).Children().ToList();
+                GetStreamInfo(JObject.Parse(ResponseBody)).Children().ToList();
             }
-            streamUrl = String.Format("https://api.twitch.tv/kraken/channels/{0}/communities", userId);
-            response = await client.GetAsync(streamUrl);
-            response.EnsureSuccessStatusCode();
-            responseBody = await response.Content.ReadAsStringAsync();
-            if (responseBody != null)
+        }
+
+        public async Task GetStreamCommunityJson(string userId)
+        { 
+            string streamUrl = String.Format("https://api.twitch.tv/kraken/channels/{0}/communities", userId);
+
+            HttpResponseMessage response = await client.GetRequest(null, Headers.ClientId, Headers.Accept, streamUrl);
+
+            string ResponseBody = await response.Content.ReadAsStringAsync();
+            if (ResponseBody != null)
             {
-                GetCommunityInfo(JObject.Parse(responseBody)).Children().ToList();
+                GetCommunityInfo(JObject.Parse(ResponseBody)).Children().ToList();
             }
             StreamInfo.Communities = communities;
-            return null;
         }
 
         private IEnumerable<JToken> GetStreamInfo(JToken json)

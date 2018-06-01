@@ -45,7 +45,8 @@ namespace ChatBot.Controllers
             Auth.SortInitialTokens(JObject.Parse(Models.Authenticate.ResponseBody)).Children().ToList();
             await Auth.GetUser(Models.Authenticate.InitialTokens["access_token"]);
             StreamInfoController Info = new StreamInfoController();
-            await Info.GetStreamInfoJson(Models.Authenticate.UserId); 
+            await Info.GetStreamInfoJson(Models.Authenticate.UserId);
+            await Info.GetStreamCommunityJson(Models.Authenticate.UserId);
             if (Models.Authenticate.IrcState == false)
             {
                 IrcController Irc = new IrcController();
@@ -72,8 +73,9 @@ namespace ChatBot.Controllers
             await Auth.Validate();
 
             UpdateController UpdateInfo = new UpdateController();
-            await UpdateInfo.Update(game, title);
-
+            //TODO: Only update title/game if changed, update all communities is any change
+            await UpdateInfo.UpdateGame(game);
+            await UpdateInfo.UpdateTitle(title);
             await UpdateInfo.UpdateCommunities(communities);
 
             return Redirect("/Home/Dashboard");

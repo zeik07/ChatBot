@@ -16,29 +16,34 @@ namespace ChatBot.Controllers
 {
     public class UpdateController : Controller
     {
-        public HttpClient client = new HttpClient();
+        public ClientController client = new ClientController();
 
-        public async Task<IActionResult> Update(string game, string title)
+        public async Task UpdateTitle(string title)
         {
             string updateUrl = String.Format("https://api.twitch.tv/kraken/channels/{0}", Authenticate.UserId);
-            game = game.Replace(" ", "+");
-            title = title.Replace(" ", "+");
-            game = "channel[game]=" + game;
-            title = "channel[status]=" + title;
-            var content = new StringContent((title + "&" + game), Encoding.UTF8, "application/x-www-form-urlencoded");
-            client.DefaultRequestHeaders.Clear();
-            client.DefaultRequestHeaders.Add("Client-ID", "i5p26xmsi1xqaf47rk031z60qns1tj");
-            client.DefaultRequestHeaders.Add("Accept", "application/vnd.twitchtv.v5+json");
-            client.DefaultRequestHeaders.Add("Authorization", " OAuth " + Authenticate.InitialTokens["access_token"]);
-            HttpResponseMessage response = await client.PutAsync(updateUrl, content);
-            response.EnsureSuccessStatusCode();
+            title = "channel[status]=" + title.Replace(" ", "+");
+            var content = new StringContent(title, Encoding.UTF8, Headers.ContentType[0].ToString());
+
+            HttpResponseMessage response = await client.PutRequest(Headers.Authorization, Headers.ClientId, Headers.Accept, content, updateUrl);
+            
             var ResponseBody = await response.Content.ReadAsStringAsync();
-            return null;
         }
+
+        public async Task UpdateGame(string game)
+        {
+            string updateUrl = String.Format("https://api.twitch.tv/kraken/channels/{0}", Authenticate.UserId);
+            game = "channel[game]=" + game.Replace(" ", "+");
+            var content = new StringContent(game, Encoding.UTF8, Headers.ContentType[0].ToString());
+
+            HttpResponseMessage response = await client.PutRequest(Headers.Authorization, Headers.ClientId, Headers.Accept, content, updateUrl);
+
+            var ResponseBody = await response.Content.ReadAsStringAsync();
+        }
+
 
         public List<string> CommunityIDList = new List<string>();
 
-        public async Task<IActionResult> UpdateCommunities(List<string> communities)
+        public async Task UpdateCommunities(List<string> communities)
         {
             CommunityIDList.Clear();
             string updateUrl = String.Format("https://api.twitch.tv/kraken/channels/{0}/communities", Authenticate.UserId);
@@ -48,28 +53,21 @@ namespace ChatBot.Controllers
             }
             string communitiesList = string.Format("{{\"community_ids\":[\"{0}\",\"{1}\",\"{2}\"]}}", CommunityIDList[0], CommunityIDList[1], CommunityIDList[2]);
             var content = new StringContent(communitiesList, Encoding.UTF8, "application/json");
-            var test = content.ReadAsStringAsync();
-            client.DefaultRequestHeaders.Clear();
-            client.DefaultRequestHeaders.Add("Accept", "application/vnd.twitchtv.v5+json");
-            client.DefaultRequestHeaders.Add("Authorization", " OAuth " + Authenticate.InitialTokens["access_token"]);
-            HttpResponseMessage response = await client.PutAsync(updateUrl, content);
-            response.EnsureSuccessStatusCode();
+
+            HttpResponseMessage response = await client.PutRequest(Headers.Authorization, null, Headers.Accept, content, updateUrl);
+                        
             var ResponseBody = await response.Content.ReadAsStringAsync();
-            return null;
         }
 
-        public async Task<IActionResult> GetCommunityJson(string community)
+        public async Task GetCommunityJson(string community)
         {
             string updateUrl = String.Format("https://api.twitch.tv/kraken/communities?name={0}", community);
-            client.DefaultRequestHeaders.Clear();
-            client.DefaultRequestHeaders.Add("Client-ID", "i5p26xmsi1xqaf47rk031z60qns1tj");
-            client.DefaultRequestHeaders.Add("Accept", "application/vnd.twitchtv.v5+json");
-            HttpResponseMessage response = await client.GetAsync(updateUrl);
-            response.EnsureSuccessStatusCode();
-            var responseBody = await response.Content.ReadAsStringAsync();
-            GetCommunityID(JObject.Parse(responseBody)).Children().ToList();
 
-            return null;
+            HttpResponseMessage response = await client.GetRequest(null, Headers.ClientId, Headers.Accept, updateUrl);
+
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            GetCommunityID(JObject.Parse(responseBody)).Children().ToList();
         }
 
         private IEnumerable<JToken> GetCommunityID(JToken json)

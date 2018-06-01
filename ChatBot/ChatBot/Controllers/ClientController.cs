@@ -43,9 +43,26 @@ namespace ChatBot.Controllers
             return response;
         }
 
-        public async Task<IActionResult> PutRequest(List<KeyValuePair<string, string>> auth, List<KeyValuePair<string, string>> id, List<KeyValuePair<string, string>> accept, string content, string url)
+        public async Task<HttpResponseMessage> PutRequest(List<KeyValuePair<string, string>> auth, List<KeyValuePair<string, string>> id, List<KeyValuePair<string, string>> accept, StringContent content, string url)
         {
-            return null;
+            client.DefaultRequestHeaders.Clear();
+            if (id != null)
+            {
+                client.DefaultRequestHeaders.Add(id[0].Key.ToString(), id[0].Value.ToString());
+            }
+            if (accept != null)
+            {
+                client.DefaultRequestHeaders.Add(accept[0].Key.ToString(), accept[0].Value.ToString());
+            }
+            if (auth != null)
+            {
+                client.DefaultRequestHeaders.Add(auth[0].Key.ToString(), auth[0].Value.ToString());
+            }
+
+            HttpResponseMessage response = await client.PutAsync(url, content);
+            response.EnsureSuccessStatusCode();
+
+            return response;
         }
     }
 }
