@@ -13,5 +13,13 @@ namespace ChatBot.Models
             { "game", StreamInfo.Game },
             { "title", StreamInfo.Title }
         };
+
+        public static Tuple<string, string, string>[] CommandsTuple =
+        {
+            Tuple.Create("test", "Testing!", "Command used in testing bot functions."),
+            Tuple.Create("game", StreamInfo.Game, "Displays the current set game for the channel"),
+            Tuple.Create("title", StreamInfo.Title, "Displays the current set title for the channel")
+        };
+    }
 }
-}
+
