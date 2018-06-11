@@ -40,7 +40,6 @@ namespace ChatBot.Controllers
             var ResponseBody = await response.Content.ReadAsStringAsync();
         }
 
-
         public List<string> CommunityIDList = new List<string>();
 
         public async Task UpdateCommunities(List<string> communities)

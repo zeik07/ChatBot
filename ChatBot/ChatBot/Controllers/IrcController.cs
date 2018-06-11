@@ -12,8 +12,8 @@ namespace ChatBot.Controllers
 {
     public class IrcController : Controller
     {
-        private static string UserName = Authenticate.UserName.ToLower();
-        private static string Password = Authenticate.InitialTokens["access_token"];
+        private static readonly string UserName = Authenticate.UserName.ToLower();
+        private static readonly string Password = Authenticate.InitialTokens["access_token"];
 
         IrcClient Irc = new IrcClient("irc.chat.twitch.tv", 6667, UserName, Password);
         NetworkStream ServerStream = default(NetworkStream);

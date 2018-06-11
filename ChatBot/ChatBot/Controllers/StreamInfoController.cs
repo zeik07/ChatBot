@@ -14,11 +14,6 @@ namespace ChatBot.Controllers
     {
         public ClientController client = new ClientController();
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
         public async Task GetStreamInfoJson(string userId)
         {
             string streamUrl = String.Format("https://api.twitch.tv/kraken/channels/{0}", userId);
