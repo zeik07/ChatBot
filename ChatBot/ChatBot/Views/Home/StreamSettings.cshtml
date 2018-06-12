@@ -1,0 +1,26 @@
+﻿@model ChatBot.ViewModels.StreamInfoViewModel
+
+@{ 
+    Layout = "Iframe_Layout";
+}
+
+<div class="flex-container">
+    <form method="post" asp-controller="Home" asp-action="update" class="grid-container">
+        <div class="info">
+            <label asp-for="Game">Game</label>
+            <input asp-for="Game" value="@(StreamInfo.Game)" />
+        </div>
+        <div class="info">
+            <label asp-for="Title">Title</label>
+            <input asp-for="Title" value="@(StreamInfo.Title)" />
+        </div>
+        <div class="communities">
+            <label>Communities</label>
+            @foreach (string community in StreamInfo.Communities)
+            {
+                <input value="@community" id="@StreamInfo.Communities.IndexOf(community)" asp-for="Communities[StreamInfo.Communities.IndexOf(community)]" />
+            }
+        </div>
+        <input class="button" type="submit" value="Update Stream" />
+    </form>
+</div>

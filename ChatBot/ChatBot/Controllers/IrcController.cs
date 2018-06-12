@@ -6,26 +6,45 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using ChatBot.Models;
+using ChatBot.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChatBot.Controllers
 {
     public class IrcController : Controller
     {
-        private static readonly string UserName = Authenticate.UserName.ToLower();
-        private static readonly string Password = Authenticate.InitialTokens["access_token"];
+        private static string UserName;
+        private static string Password;
+        private static bool IrcState;
 
         IrcClient Irc = new IrcClient("irc.chat.twitch.tv", 6667, UserName, Password);
         NetworkStream ServerStream = default(NetworkStream);
-        string ReadData = "";
+        public string ReadData = "";
         Thread ChatThread;
+        
+        internal static void IrcSet()
+        {
+            UserName = Models.Irc.BotName;
+            Password = Models.Irc.BotOAuth;
+        }
 
         public void StartIrc()
         {            
             //Starts the Irc client
-            Irc.JoinRoom(UserName);            
+            if (Irc == null)
+            {
+                Irc = new IrcClient("irc.chat.twitch.tv", 6667, UserName, Password);
+            }
+            Irc.JoinRoom(Authenticate.UserName);
             ChatThread = new Thread(GetMessage);
             ChatThread.Start();
+            IrcState = true;
+        }
+
+        public void StopIrc()
+        {
+            Irc.LeaveRoom();
+            IrcState = false;
         }
         
         private void GetMessage()
@@ -35,12 +54,19 @@ namespace ChatBot.Controllers
             int buffSize = 0;
             byte[] inStream = new byte[10025];
             buffSize = Irc.tcpClient.ReceiveBufferSize;
-            while (true)
-            {
+            while (IrcState == true)
+            {                
                 try
-                {
+                {                    
                     ReadData = Irc.ReadMessage();
-                    Msg();
+                    if (ReadData != null)
+                    {
+                        var test = ReadData;
+                    }
+                    if (IrcState != false)
+                    {
+                        Msg();
+                    }
                 }
                 catch (Exception e)
                 {
@@ -73,17 +99,17 @@ namespace ChatBot.Controllers
             {
                 Irc.PingResponse();
             }
-        }
+        }        
 
         private void Commands(string userName, string message)
         {
             string command = message.Split(new[] { ' ', '!' }, StringSplitOptions.None)[1];
             //Checks to see if message containing the ! is actually a command and if so processes it for a response
-            foreach (KeyValuePair<string, string> commands in CommandList.CommandsList)
+            foreach (Tuple<string, string, string> commands in CommandList.CommandsTuple)
             {
-                if (command.ToLower() == commands.Key.ToString().ToLower())
+                if (command.ToLower() == commands.Item1.ToString().ToLower())
                 {
-                    Irc.SendChatMessage(commands.Value.ToString());
+                    Irc.SendChatMessage(commands.Item2.ToString());
                     break;
                 }
             }
@@ -104,15 +130,17 @@ namespace ChatBot.Controllers
         public TcpClient tcpClient;
         public StreamReader inputStream;
         public StreamWriter outputStream;
+        public string UserName;
 
         public IrcClient(string ip, int port, string userName, string password)
         {
+            UserName = userName;
             //Sends the required information to Twitch to connect to their Irc server
             tcpClient = new TcpClient(ip, port);
             inputStream = new StreamReader(tcpClient.GetStream());
             outputStream = new StreamWriter(tcpClient.GetStream());
 
-            outputStream.WriteLine("PASS oauth:" + password);
+            outputStream.WriteLine("PASS " + password);
             outputStream.WriteLine("NICK " + userName);
             outputStream.WriteLine("USER " + userName + " 8 * :" + userName);
             outputStream.WriteLine("CAP REQ :twitch.tv/membership");
@@ -130,7 +158,7 @@ namespace ChatBot.Controllers
 
         public void LeaveRoom()
         {
-            //Leaves the channel the bot is in
+            //Leaves the channel the bot is in         
             outputStream.Close();
             inputStream.Close();
         }
@@ -145,8 +173,8 @@ namespace ChatBot.Controllers
         public void SendChatMessage(string message)
         {
             //Formats a message to send to the Twitch Irc server
-            string userName = Authenticate.UserName.ToLower();
-            SendIrcMessage(":" + userName + "!" + userName + "@" + userName + ".tmi.twitch.tv PRIVMSG #" + userName + " :" + message);
+            string userName = UserName.ToLower();
+            SendIrcMessage(":" + userName + "!" + userName + "@" + userName + ".tmi.twitch.tv PRIVMSG #" + channel + " :" + message);
         }
 
         public void PingResponse()

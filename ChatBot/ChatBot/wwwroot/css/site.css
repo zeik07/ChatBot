@@ -22,12 +22,14 @@
 
 .grid-container {
     display: grid;
-    grid-template-columns: 25% 25% 25% 25%;
+    grid-template-columns: 20% 20% 20% 20% 20%;
     grid-template-rows: auto auto auto;
     grid-gap: 10px;
     padding: 10px;
     background-color: #161616;
     height: 150px;
+    width: 620px;
+    justify-content: flex-start;
 }
 
 .commands {
@@ -40,13 +42,15 @@
 .info {
     grid-column: span 2;
 }
+
 .botInfo {
     grid-column: span 4;
 }
 
 .communities {
-    grid-column: span 4;
+    grid-column: span 5;
 }
+
 .grid-container > div{
     padding: 5px;
 }

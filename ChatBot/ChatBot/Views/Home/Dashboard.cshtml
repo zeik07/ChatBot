@@ -1,50 +1,14 @@
-﻿@model ChatBot.ViewModels.StreamInfoViewModel
-
-@{
-    ViewData["Title"] = "Home Page";
+﻿@{
+    ViewData["Title"] = "Dashboard";
 }
 
 <h1>@(Authenticate.UserName + "'s") Dashboard</h1>
 <div class="flex-container">
     <div>
-        <iframe frameborder="0" scrolling="yes" id="chat_embed" src="http://www.twitch.tv/embed/@(Authenticate.UserName)/chat" height="600" width="500"></iframe>
+        <iframe frameborder="0" scrolling="no" id="chat_embed" src="http://www.twitch.tv/embed/@(Authenticate.UserName)/chat" height="600" width="500"></iframe>
     </div>
     <div>
-        <form method="post" asp-controller="Home" asp-action="irc" class="grid-container">
-            <div class="botInfo">
-                <label asp-for="BotUsername">Bot Username</label>
-                <input type="text" />
-            </div>
-            <div class="botInfo">
-                <label>Bot OAuth</label>
-                <input type="password" />
-            </div>
-            @if (Authenticate.IrcState == false)
-            {
-                <input class="button" type="submit" value="Join Chat" />
-            }
-            else
-            {
-                <input class="button" type="submit" value="Leave Chat" />
-            }
-        </form>
-        <form method="post" asp-controller="Home" asp-action="update" class="grid-container">
-            <div class="info">
-                <label asp-for="Game">Game</label>
-                <input asp-for="Game" value="@(StreamInfo.Game)" />
-            </div>
-            <div class="info">
-                <label asp-for="Title">Title</label>
-                <input asp-for="Title" value="@(StreamInfo.Title)" />
-            </div>
-            <div class="communities">
-                <label>Communities</label>
-                @foreach (string community in StreamInfo.Communities)
-                {
-                    <input value="@community" id="@StreamInfo.Communities.IndexOf(community)" asp-for="Communities[StreamInfo.Communities.IndexOf(community)]" />
-                }
-            </div>
-            <input class="button" type="submit" value="Update Stream" />
-        </form>
+        <iframe frameborder="0" scrolling="no" id="bot_info_embed" src="@Url.Action("botsettings")" height="200" width="620"></iframe>
+        <iframe frameborder="0" scrolling="no" id="bot_info_embed" src="@Url.Action("streamsettings")" height="200" width="620"></iframe>
     </div>
 </div>

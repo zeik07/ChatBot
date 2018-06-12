@@ -15,6 +15,11 @@ namespace ChatBot.Controllers
 {
     public class HomeController : Controller
     {
+        public StreamInfoController Info = new StreamInfoController();
+        public AuthController Auth = new AuthController();
+        public IrcController IrcC;
+
+
         public async Task<IActionResult> Index()
         {
             //Check to see if initial tokens have been recieved already to prevent double logins
@@ -25,7 +30,7 @@ namespace ChatBot.Controllers
             //Redirects to Twitch for Authorization of this app for use with the chosen account login
             Models.Authenticate.AuthorizationCode = HttpContext.Request.Query["code"];
             //Sets the state of the Irc client to false for initial pass through, set to true on Irc client launch to prevent duplicate launches/messages in chat
-            Models.Authenticate.IrcState = false;
+            Models.Authenticate.IrcState = "startirc";
             //Checks to make sure that the Authorization Code is recieved from Twitch after the app has been authorized, then gets a set of authoization tokens
             if (Models.Authenticate.AuthorizationCode != null)
             {
@@ -39,7 +44,42 @@ namespace ChatBot.Controllers
             }
             return View();
         }
+
+        public IActionResult BotSettings()
+        {
+            return View();
+        }
+
+        public IActionResult StreamSettings()
+        {
+            return View();
+        }
         
+        public IActionResult IrcControl(BotInfoViewModel botInfoViewModel)
+        {
+            if (Irc.BotName == null)
+            {
+                Irc.BotName = botInfoViewModel.BotName.ToLower();
+                Irc.BotOAuth = botInfoViewModel.BotOAuth;
+            }            
+            if (IrcC == null)
+            {
+                IrcController.IrcSet();
+                IrcC = new IrcController();
+            }
+            if (Models.Authenticate.IrcState == "startirc")
+            {
+                IrcC.StartIrc();
+                Models.Authenticate.IrcState = "stopirc";
+            }
+            else
+            {
+                IrcC.StopIrc();
+                Models.Authenticate.IrcState = "startirc";
+            }
+            return Redirect("/Home/BotSettings/");
+        }
+
         public async Task<IActionResult> Dashboard()
         {
             //Check to see if there is a Response Body with tokens to process
@@ -47,24 +87,15 @@ namespace ChatBot.Controllers
             {
                 return Redirect("/Home");
             }
-            AuthController Auth = new AuthController();
             //Sorts the initial tokens and gathers they one that are needed
             Auth.SortInitialTokens(JObject.Parse(Models.Authenticate.ResponseBody)).Children().ToList();
             //Gets the Username and User ID from Twitch for the account that was used to Authenticate
             await Auth.GetUser(Models.Authenticate.InitialTokens["access_token"]);
-            StreamInfoController Info = new StreamInfoController();
             //Gets the Twitch channels title and game/catagory
             await Info.GetStreamInfoJson(Models.Authenticate.UserId);
             //Gets the Twitch channels communities
             await Info.GetStreamCommunityJson(Models.Authenticate.UserId);
-            //Checks to see if the Irc client is started, if not then it starts the Irc client and sets the state to true to avoid duplicate launches
-            if (Models.Authenticate.IrcState == false)
-            {
-                IrcController Irc = new IrcController();
-                Irc.StartIrc();
-                Models.Authenticate.IrcState = true;
-            }
-            
+
             return View();
         }
 
@@ -83,7 +114,6 @@ namespace ChatBot.Controllers
             List<string> communities = streamInfoViewModel.Communities;
 
             //Validates the login information to make sure the app is still authorized to makes changes
-            AuthController Auth = new AuthController();
             await Auth.Validate();
 
             //Updates the game, title, and communities on Twitch with the information on the dashboard
@@ -93,7 +123,12 @@ namespace ChatBot.Controllers
             await UpdateInfo.UpdateTitle(title);
             await UpdateInfo.UpdateCommunities(communities);
 
-            return Redirect("/Home/Dashboard");
+            //Gets the Twitch channels title and game/catagory
+            await Info.GetStreamInfoJson(Models.Authenticate.UserId);
+            //Gets the Twitch channels communities
+            await Info.GetStreamCommunityJson(Models.Authenticate.UserId);
+
+            return Redirect("/Home/StreamSettings");
         }
 
         public IActionResult About()

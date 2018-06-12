@@ -1,0 +1,35 @@
+﻿@model ChatBot.ViewModels.BotInfoViewModel
+
+@{ 
+    Layout = "Iframe_Layout";    
+}
+
+<div class="flex-container">
+    <form method="post" asp-controller="Home" asp-action="IrcControl" class="grid-container">
+
+        @if (Authenticate.IrcState == "startirc")
+        {
+            <div class="botInfo">
+                <label asp-for="BotName">Bot Username</label>
+                <input asp-for="BotName" type="text" value="@Irc.BotName" required="required" />
+            </div>
+            <div class="botInfo">
+                <label asp-for="BotOAuth">Bot OAuth</label>
+                <input asp-for="BotOAuth" type="password" value="@Irc.BotOAuth" required="required" />
+            </div>
+            <input class="button" type="submit" value="Join Chat" />
+        }
+        else
+        {
+            <div class="botInfo">
+                <label asp-for="BotName">Bot Username</label>
+                <input asp-for="BotName" type="text" value="@Irc.BotName" disabled />
+            </div>
+            <div class="botInfo">
+                <label asp-for="BotOAuth">Bot OAuth</label>
+                <input asp-for="BotOAuth" type="hidden" />
+            </div>
+            <input class="button" type="submit" value="Leave Chat" />
+        }
+    </form>
+</div>
