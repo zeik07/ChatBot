@@ -16,6 +16,7 @@ namespace ChatBot.Controllers
 
         public async Task GetTokens()
         {
+            //Gets intial tokens from Twitch after authorization
             string tokensUrl = String.Format(
                 "https://id.twitch.tv/oauth2/token?client_id=i5p26xmsi1xqaf47rk031z60qns1tj&client_secret=7l89xz347lkgslrbtldz0pw1bau9vw&grant_type=authorization_code&redirect_uri=http://localhost:51083&code={0}",
                 Authenticate.AuthorizationCode);
@@ -27,6 +28,7 @@ namespace ChatBot.Controllers
 
         public async Task GetUser(string access)
         {
+            //Gets username and id from Twitch after being authorized
             string userUrl = "https://api.twitch.tv/kraken/user";
 
             HttpResponseMessage response = await client.GetRequest(Headers.Authorization, Headers.ClientId, Headers.Accept, userUrl);
@@ -40,6 +42,7 @@ namespace ChatBot.Controllers
 
         public async Task Validate()
         {
+            //Validates to Twitch to insure the app is still authorized
             string validateUrl = "https://id.twitch.tv/oauth2/validate";
 
             HttpResponseMessage response = await client.GetRequest(Headers.Authorization, null, null, validateUrl);
@@ -47,6 +50,7 @@ namespace ChatBot.Controllers
 
         private IEnumerable<JToken> GetUserInfo(JToken json)
         {
+            //Loops through the json that was returned by Twitch and looks for username and user id
             foreach (var c in json.Children())
             {
                 string path = c.Path.ToString();
@@ -69,6 +73,7 @@ namespace ChatBot.Controllers
         
         public IEnumerable<JToken> SortInitialTokens(JToken json)
         {            
+            //Loops through the Json recieved from Twitch and pulls the initial tokens that are needed and avoids ones that arent needed
             Dictionary<string, string> tokens = new Dictionary<string, string>();
             foreach (var c in json.Children())
             {

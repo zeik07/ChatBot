@@ -20,6 +20,7 @@ namespace ChatBot.Controllers
 
         public async Task UpdateTitle(string title)
         {
+            //Updates the title on Twitch with the title infomation from the Dashboard
             string updateUrl = String.Format("https://api.twitch.tv/kraken/channels/{0}", Authenticate.UserId);
             title = "channel[status]=" + title.Replace(" ", "+");
             var content = new StringContent(title, Encoding.UTF8, Headers.ContentType[0].ToString());
@@ -31,6 +32,7 @@ namespace ChatBot.Controllers
 
         public async Task UpdateGame(string game)
         {
+            //Updates the game on Twitch with the game information from the Dashboard
             string updateUrl = String.Format("https://api.twitch.tv/kraken/channels/{0}", Authenticate.UserId);
             game = "channel[game]=" + game.Replace(" ", "+");
             var content = new StringContent(game, Encoding.UTF8, Headers.ContentType[0].ToString());
@@ -44,6 +46,7 @@ namespace ChatBot.Controllers
 
         public async Task UpdateCommunities(List<string> communities)
         {
+            //Updates the communities on Twitch with the communities information from the Dashboard
             CommunityIDList.Clear();
             string updateUrl = String.Format("https://api.twitch.tv/kraken/channels/{0}/communities", Authenticate.UserId);
             foreach (string community in communities)
@@ -60,6 +63,7 @@ namespace ChatBot.Controllers
 
         public async Task GetCommunityJson(string community)
         {
+            //Gets the information from Twitch on a single community
             string updateUrl = String.Format("https://api.twitch.tv/kraken/communities?name={0}", community);
 
             HttpResponseMessage response = await client.GetRequest(null, Headers.ClientId, Headers.Accept, updateUrl);
@@ -71,6 +75,7 @@ namespace ChatBot.Controllers
 
         private IEnumerable<JToken> GetCommunityID(JToken json)
         {
+            //Loops through the Json from Twitch to find a single community Id
             foreach (var c in json.Children())
             {
                 string path = c.Path.ToString();

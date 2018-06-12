@@ -5,7 +5,6 @@
     color: white;
 }
 
-/* Wrapping element */
 /* Set some basic padding to keep content from hitting the edges */
 .body-content {
     padding-left: 15px;
@@ -14,20 +13,16 @@
 
 /* Hide/rearrange for smaller screens */
 @media screen and (max-width: 767px) {
-    /* Hide captions */
-    .carousel-caption {
-        display: none;
-    }
 }
 
-.flex-container{
+.flex-container {
     display: flex;
     justify-content: space-between;
 }
 
 .grid-container {
     display: grid;
-    grid-template-columns: auto auto auto auto;
+    grid-template-columns: 25% 25% 25% 25%;
     grid-template-rows: auto auto auto;
     grid-gap: 10px;
     padding: 10px;
@@ -35,27 +30,38 @@
     height: 150px;
 }
 
-.info{
-    grid-column: span 2;
+.commands {
+    display: grid;
+    grid-template-columns: 10% 90%;
+    grid-gap: 10px;
+    padding: 10px;
 }
 
-.communities{
+.info {
+    grid-column: span 2;
+}
+.botInfo {
+    grid-column: span 4;
+}
+
+.communities {
     grid-column: span 4;
 }
 .grid-container > div{
     padding: 5px;
 }
 
-.button{
+.button {
     grid-row: 3;
     grid-column: 4;
+    width: 150px;
 }
 
-input{
+input {
     color: black;
 }
 
-.index-flex{
+.index-flex {
     display: flex;
     height: 600px;
     align-items: center;

@@ -13,9 +13,10 @@ namespace ChatBot.Controllers
     public class StreamInfoController : Controller
     {
         public ClientController client = new ClientController();
-
+    
         public async Task GetStreamInfoJson(string userId)
         {
+            //Requests channel data from Twitch (games, title, etc)
             string streamUrl = String.Format("https://api.twitch.tv/kraken/channels/{0}", userId);
 
             HttpResponseMessage response = await client.GetRequest(null, Headers.ClientId, Headers.Accept, streamUrl);
@@ -29,6 +30,7 @@ namespace ChatBot.Controllers
 
         public async Task GetStreamCommunityJson(string userId)
         { 
+            //Requests channel community data from Twitch
             string streamUrl = String.Format("https://api.twitch.tv/kraken/channels/{0}/communities", userId);
 
             HttpResponseMessage response = await client.GetRequest(null, Headers.ClientId, Headers.Accept, streamUrl);
@@ -43,6 +45,7 @@ namespace ChatBot.Controllers
 
         private IEnumerable<JToken> GetStreamInfo(JToken json)
         {
+            //Loops through stream info Json from Twitch to get the channel title and channel game/catagory
             foreach (var c in json.Children())
             {
                 string path = c.Path.ToString();
@@ -67,6 +70,7 @@ namespace ChatBot.Controllers
 
         private IEnumerable<JToken> GetCommunityInfo(JToken json)
         {
+            //Loops through community Json from Twitch to find the communities for the channel
             foreach (var c in json.Children())
             {
                 string path = c.Path.ToString();

@@ -14,6 +14,7 @@ namespace ChatBot.Controllers
 
         public async Task<HttpResponseMessage> GetRequest(List<KeyValuePair<string, string>> auth, List<KeyValuePair<string, string>> id, List<KeyValuePair<string, string>> accept, string url)
         {
+            //Applies required headers to perform a GET request to Twitch
             client.DefaultRequestHeaders.Clear();
             if (id != null)
             {
@@ -28,6 +29,7 @@ namespace ChatBot.Controllers
                 client.DefaultRequestHeaders.Add(auth[0].Key.ToString(), auth[0].Value.ToString());
             }
 
+            //Performs GET request to Twitch
             HttpResponseMessage response = await client.GetAsync(url);
             response.EnsureSuccessStatusCode();
 
@@ -36,6 +38,7 @@ namespace ChatBot.Controllers
 
         public async Task<HttpResponseMessage> PostRequest(string url)
         {
+            //Performs a POST request to Twitch
             HttpContent content = null;
             HttpResponseMessage response = await client.PostAsync(url, content);
             response.EnsureSuccessStatusCode();
@@ -45,6 +48,7 @@ namespace ChatBot.Controllers
 
         public async Task<HttpResponseMessage> PutRequest(List<KeyValuePair<string, string>> auth, List<KeyValuePair<string, string>> id, List<KeyValuePair<string, string>> accept, StringContent content, string url)
         {
+            //Applies the required headers to perform a PUT request to Twitch
             client.DefaultRequestHeaders.Clear();
             if (id != null)
             {
@@ -59,6 +63,7 @@ namespace ChatBot.Controllers
                 client.DefaultRequestHeaders.Add(auth[0].Key.ToString(), auth[0].Value.ToString());
             }
 
+            //Performs a PUT request to Twitch
             HttpResponseMessage response = await client.PutAsync(url, content);
             response.EnsureSuccessStatusCode();
 
