@@ -772,10 +772,7 @@ a:hover {
     grid-row: 3;
     grid-column: 1;
 }
-iframe {
-    border: solid;
-    border-color: #0e0e0e;
-}
+
 .flex-container > div{
     margin: 5px;
 }
@@ -783,6 +780,7 @@ iframe {
 p {
     color: gray;
 }
+
 hr {
     color: gray;
 }

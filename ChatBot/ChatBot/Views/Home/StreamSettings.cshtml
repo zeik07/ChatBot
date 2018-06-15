@@ -4,8 +4,9 @@
     Layout = "Iframe_Layout";
 }
 
-<div class="flex-container">
+<div class="flex-container dash-unit">
     <form method="post" asp-controller="Home" asp-action="update" class="grid-container">
+        <dtitle>Stream Information</dtitle>
         <div class="info">
             <label asp-for="Game">Game</label>
             <input asp-for="Game" value="@(StreamInfo.Game)" />

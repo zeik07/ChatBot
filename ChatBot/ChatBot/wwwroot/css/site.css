@@ -50,7 +50,6 @@ h5 {
     background-image: url(../img/sep-half.png);
     background-color: #3d3d3d;
     color: #fff;
-    height: 290px
 }
 
     .dash-unit:hover {
@@ -64,9 +63,9 @@ h5 {
         font-size: 11px;
         text-transform: uppercase;
         color: #fff;
-        margin: 8px;
+        margin: 5px;
         padding: 0;
-        height: inherit
+        height: inherit;
     }
 
     .dash-unit hr {
@@ -850,31 +849,59 @@ a:hover {
 
 .flex-container {
     display: flex;
-    justify-content: space-around;
-    align-content: space-around;
-    padding: 10px;
+    justify-content: space-between;
+    align-content: space-between;
+    padding: 5px;
+    width: 625px;
 }
 
 .grid-container {
     display: grid;
     grid-template-columns: 12.5% 12.5% 12.5% 12.5% 12.5% 12.5% 12.5% 12.5%;
-    grid-template-rows: 33% 33% 34%;
-    grid-gap: 9px;
-    height: 150px;
+    grid-template-rows: 25% 25% 25% 25%;
+    height: 180px;
     width: 620px;
     justify-content: flex-start;
+}
+
+.grid-container > dtitle {
+    grid-column: span 8;
 }
 
 .info {
     grid-column: span 4;
 }
 
+.info > label {
+    width: 100px;
+}
+
+.info > input {
+    width: 195px;
+}
+
 .botInfo {
     grid-column: span 8;
 }
 
+.botInfo > label {
+    width: 100px;
+}
+
+.botInfo > input {
+    width: 500px;
+}
+
 .communities {
     grid-column: span 8;
+}
+
+.communities > label {
+    width: 100px;
+}
+
+.communities > input {
+    width: 164px;
 }
 
 .commands {
@@ -885,11 +912,6 @@ a:hover {
 }
 
 .button {
-    grid-row: 3;
+    grid-row: 4;
     grid-column: 1;
-}
-
-.div-border > iframe {
-    border: solid;
-    border-color: #0e0e0e;
 }

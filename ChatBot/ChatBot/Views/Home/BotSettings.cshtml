@@ -4,9 +4,9 @@
     Layout = "Iframe_Layout";    
 }
 
-<div class="flex-container">
+<div class="flex-container dash-unit">
     <form method="post" asp-controller="Home" asp-action="IrcControl" class="grid-container">
-
+        <dtitle>Bot Information</dtitle>
         @if (Authenticate.IrcState == "startirc")
         {
             <div class="botInfo">
